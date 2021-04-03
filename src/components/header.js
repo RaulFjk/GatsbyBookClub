@@ -1,35 +1,61 @@
-import * as React from "react"
 import PropTypes from "prop-types"
-import { Link } from "gatsby"
+import { Link, navigate } from "gatsby"
+import React, {useContext} from 'react'
+import {FirebaseContext} from './Firebase'
 
-const Header = ({ siteTitle }) => (
-  <header
-    style={{
-      background: `rebeccapurple`,
-      marginBottom: `1.45rem`,
-    }}
-  >
-    <div
+const Header = ({ siteTitle }) => {
+  const {firebase, user} = useContext(FirebaseContext);
+  console.log(firebase, user);
+
+  function handleLogOutClick(){
+    firebase.logout().then(()=> navigate('/login'));
+  }
+  return(
+    <header
       style={{
-        margin: `0 auto`,
-        maxWidth: 960,
-        padding: `1.45rem 1.0875rem`,
+        background: `rebeccapurple`,
+        marginBottom: `1.45rem`,
       }}
     >
-      <h1 style={{ margin: 0 }}>
-        <Link
-          to="/"
-          style={{
-            color: `white`,
-            textDecoration: `none`,
-          }}
-        >
-          {siteTitle}
-        </Link>
-      </h1>
-    </div>
-  </header>
-)
+      <div
+        style={{
+          margin: `0 auto`,
+          maxWidth: 960,
+          padding: `1.45rem 1.0875rem`,
+          display: 'flex'
+        }}
+      >
+        <h1 style={{ margin: 0, flexGrow: 1 }}>
+          <Link
+            to="/"
+            style={{
+              color: `white`,
+              textDecoration: `none`,
+            }}
+          >
+            {siteTitle}
+          </Link>
+        </h1>
+        <div className="my-auto mx-0">
+          {!!user && !!user.email &&
+            <div>
+              Hello, {user.email}
+              <div className="text-right">
+                 <button onClick={handleLogOutClick} className="hover:underline hover:text-white cursor-pointer">Logout</button>
+              </div>
+            </div>
+          }
+          {
+            (!user || !user.email) && 
+            <Link to='/login'>
+              Login
+            </Link>
+          }
+        </div>
+      </div>
+    </header>
+  );
+}
 
 Header.propTypes = {
   siteTitle: PropTypes.string,

@@ -2,6 +2,7 @@ import PropTypes from "prop-types"
 import { Link, navigate } from "gatsby"
 import React, {useContext} from 'react'
 import {FirebaseContext} from './Firebase'
+import  SignedOutLinks from '../components/SignedOutLinks'
 
 const Header = ({ siteTitle }) => {
   const {firebase, user} = useContext(FirebaseContext);
@@ -47,9 +48,7 @@ const Header = ({ siteTitle }) => {
           }
           {
             (!user || !user.email) && 
-            <Link to='/login'>
-              Login
-            </Link>
+            <SignedOutLinks />
           }
         </div>
       </div>

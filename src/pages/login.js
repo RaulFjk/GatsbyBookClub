@@ -1,14 +1,12 @@
-import React,{ useState } from "react"
+import React,{ useState, useContext } from "react"
 import { Link, navigate } from "gatsby"
-import { useAuth } from '../components/Firebase';
-
-import Layout from "../components/layout"
+import { FirebaseContext } from '../components/Firebase';
 import SEO from "../components/seo"
 
-const SecondPage = () => {
+const LoginPage = () => {
 
     const [formValues, setFormValues] = useState({email: '', password: ''});
-    const { firebase } = useAuth();
+    const { firebase } = useContext(FirebaseContext);
 
     function handleSubmit(e){
         e.preventDefault();
@@ -25,7 +23,7 @@ const SecondPage = () => {
         }));
     }
     return (
-        <Layout>
+        <section>
              <div className="grid grid-cols-6 w-full h-full">
                 <div className="col-start-2 col-span-4 p-12 bg-purple-600 mb-5 rounded-lg shadow-xl bg-transparent bg-opacity-60 sm:w-8/12 md:w-1/2 lg:w-11/12">
                     <form onSubmit={handleSubmit}>
@@ -40,9 +38,9 @@ const SecondPage = () => {
                     </form>
                 </div>
             </div>
-        </Layout>
+        </section>
     );
 
 } 
 
-export default SecondPage;
+export default LoginPage;

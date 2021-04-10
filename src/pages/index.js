@@ -8,7 +8,7 @@ import SEO from "../components/seo"
 
 const IndexPage = (props) => {
   return (
-      <Layout>
+      <section>
         {/* <SEO title="Home" /> */}
         {props.data.allBook.edges.map(edge =>(
             <BookItem
@@ -25,7 +25,7 @@ const IndexPage = (props) => {
            
         ))}
 
-      </Layout>
+      </section>
     );
 }
 export const query = graphql`

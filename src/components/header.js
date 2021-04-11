@@ -6,7 +6,7 @@ import  SignedOutLinks from '../components/SignedOutLinks'
 
 const Header = ({ siteTitle }) => {
   const {firebase, user} = useContext(FirebaseContext);
-  console.log(firebase, user);
+  console.log(user);
 
   function handleLogOutClick(){
     firebase.logout().then(()=> navigate('/login'));
@@ -40,7 +40,7 @@ const Header = ({ siteTitle }) => {
         <div className="my-auto mx-0">
           {!!user && !!user.email &&
             <div>
-              Hello, {user.email}
+              Hello, {user.username || user.email}
               <div className="text-right">
                  <button onClick={handleLogOutClick} className="hover:underline hover:text-white cursor-pointer">Logout</button>
               </div>

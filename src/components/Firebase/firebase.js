@@ -17,6 +17,19 @@ class Firebase {
         }
     }
 
+    async getUserProfile({userId}){
+        return this.db.collection('publicProfiles').where('userId', '==', userId).get();
+    }
+
+    async register({email, password}) {
+        return this.auth.createUserWithEmailAndPassword(email, password);
+    }
+
+    subscribeToBookComments({bookId, onSnapshot}){
+        const bookRef = this.db.collection('books').doc(bookId);
+        return this.db.collection('comments').where('book', '==', bookRef).onSnapshot(onSnapshot);
+        }
+
     async login({ email, password }) {
         return this.auth.signInWithEmailAndPassword(email, password);
     }
@@ -24,6 +37,7 @@ class Firebase {
     async logout() {
         await this.auth.signOut();
     }
+
 }
 
 let firebaseInstance;

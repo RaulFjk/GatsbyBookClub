@@ -1,20 +1,42 @@
-import React, { useState } from "react"
+import React, { useState, useContext } from "react"
+import { FirebaseContext, firebaseContext } from "../components/Firebase"
+import ErrorMessage from "../components/ErrorMessage"
 
 const Register = () => {
+  const { firebase } = useContext(FirebaseContext)
+
   const [formValues, setFormValues] = useState({
     email: "",
     password: "",
     confirmPassword: "",
   })
 
+  const [errorMessage, setErrorMessage] = useState("")
+
   function handleSubmit(e) {
     e.preventDefault()
+
+    if (formValues.password === formValues.confirmPassword) {
+      firebase
+        .register({
+          email: formValues.email,
+          password: formValues.password,
+        })
+        .catch(error => {
+          setErrorMessage(error.message)
+        })
+    } else {
+      setErrorMessage(
+        "Password and Confirm Password fields must match. Please try again!"
+      )
+    }
   }
 
   function handleInputChange(e) {
-    setFormValues(currentValues =>({
-        ...currentValues,
-        [e.target.name]: e.target.value
+    setErrorMessage("")
+    setFormValues(currentValues => ({
+      ...currentValues,
+      [e.target.name]: e.target.value,
     }))
   }
 
@@ -42,6 +64,7 @@ const Register = () => {
       <input
         className="block rounded-lg w-full p-3 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
         name="password"
+        minLength={6}
         onChange={handleInputChange}
         placeholder="password"
         type="password"
@@ -52,10 +75,12 @@ const Register = () => {
       <input
         className="block rounded-lg w-full p-3 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
         name="confirmPassword"
+        minLength={6}
         onChange={handleInputChange}
         placeholder="confirm password"
         type="password"
       />
+      {!!errorMessage && <ErrorMessage errorMessage={errorMessage} />}
       <button
         className="w-full py-3 mt-6 font-medium tracking-widest rounded-md text-white uppercase bg-purple-800 shadow-lg focus:outline-none hover:bg-gray-900 hover:shadow-none"
         type="submit"

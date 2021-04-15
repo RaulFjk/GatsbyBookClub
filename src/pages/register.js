@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react"
+import React, { useState, useContext, useEffect } from "react"
 import { FirebaseContext, firebaseContext } from "../components/Firebase"
 import ErrorMessage from "../components/ErrorMessage"
 
@@ -6,12 +6,21 @@ const Register = () => {
   const { firebase } = useContext(FirebaseContext)
 
   const [formValues, setFormValues] = useState({
+    username: "",
     email: "",
     password: "",
     confirmPassword: "",
   })
 
   const [errorMessage, setErrorMessage] = useState("")
+
+  let isMounted = true;
+
+  useEffect(() =>{
+    return () => {
+      isMounted = false;
+    }
+  })
 
   function handleSubmit(e) {
     e.preventDefault()
@@ -21,14 +30,19 @@ const Register = () => {
         .register({
           email: formValues.email,
           password: formValues.password,
+          username: formValues.username
         })
         .catch(error => {
-          setErrorMessage(error.message)
+          if(isMounted){
+          setErrorMessage(error.message);
+        }
         })
     } else {
+      if(isMounted){
       setErrorMessage(
         "Password and Confirm Password fields must match. Please try again!"
-      )
+      );
+    }
     }
   }
 
@@ -45,6 +59,16 @@ const Register = () => {
       <h1 className="text-3xl w-full font-bold text-dark flex justify-center mb-5 ">
         <span>Register</span>
       </h1>
+      <label for="username" className="block text-s font-bold text-dark uppercase">
+        Username
+      </label>
+      <input
+        className="block rounded-lg w-full p-3 mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner"
+        name="username"
+        onChange={handleInputChange}
+        placeholder="username"
+        type="text"
+      />
       <label for="email" className="block text-s font-bold text-dark uppercase">
         E-mail
       </label>

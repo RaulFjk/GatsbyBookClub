@@ -1,5 +1,6 @@
 import { comment } from "postcss"
 import React, { useEffect, useState } from "react"
+import moment from 'moment';
 
 const BookComments = ({ firebase, bookId }) => {
   const [comments, setComments] = useState([])
@@ -52,7 +53,7 @@ const BookComments = ({ firebase, bookId }) => {
         </form>
       {comments.map(comment => (
         <div className="text-xs text-gray-700 border-b-2 p-2 " key={comment.id}>
-          <strong>{comment.username}</strong>
+          <strong>{comment.username} - {moment(comment.dateCreated.toDate()).format('HH:mm Do MMM YYYY')}</strong>
           <div>{comment.text}</div>
         </div>
       ))}

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react"
+import React, { useState, useContext, useEffect } from "react"
 import { Link, navigate } from "gatsby"
 import { FirebaseContext } from "../components/Firebase"
 import SEO from "../components/seo"
@@ -8,6 +8,13 @@ const LoginPage = () => {
   const [formValues, setFormValues] = useState({ email: "", password: "" })
   const [errorMessage, setErrorMessage] = useState("")
   const { firebase } = useContext(FirebaseContext)
+  let isMounted = true;
+
+  useEffect(() =>{
+    return () => {
+      isMounted = false;
+    }
+  })
 
   function handleSubmit(e) {
     e.preventDefault()
@@ -15,8 +22,9 @@ const LoginPage = () => {
     firebase
       .login({ email: formValues.email, password: formValues.password })
       .catch(error => {
+        if(isMounted){
         console.log(error)
-        setErrorMessage(error.message)
+        setErrorMessage(error.message) }
       })
     // if (errorMessage === '') {
     //   navigate("/");

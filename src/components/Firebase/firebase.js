@@ -17,12 +17,41 @@ class Firebase {
         }
     }
 
-    async getUserProfile({userId}){
-        return this.db.collection('publicProfiles').where('userId', '==', userId).get();
+    getUserProfile({userId, onSnapshot}){
+        return this.db.collection('publicProfiles')
+        .where('userId', '==', userId)
+        .limit(1)
+        .onSnapshot(onSnapshot);
+        
     }
 
-    async register({email, password}) {
-        return this.auth.createUserWithEmailAndPassword(email, password);
+    async getAuthors(){
+        return this.db.collection('authors').get();
+    }
+
+    async createBook({bookName, authorId, bookCover, summary}){
+        const createBookCallable = this.functions.httpsCallable('createBook');
+        return createBookCallable({
+            bookName,
+            authorId,
+            bookCover,
+            summary
+        })
+    }
+
+    async createAuthor({authorName}){
+        const createAuthorCallable = this.functions.httpsCallable('createAuthor');
+        return createAuthorCallable({
+            authorName
+        });
+    }
+
+    async register({email, password, username}) {
+        await this.auth.createUserWithEmailAndPassword(email, password);
+        const createProfileCallable = this.functions.httpsCallable('createPublicProfile');
+        return createProfileCallable({
+            username
+        })
     }
 
     async postComment({text, bookId}){
@@ -35,7 +64,10 @@ class Firebase {
 
     subscribeToBookComments({bookId, onSnapshot}){
         const bookRef = this.db.collection('books').doc(bookId);
-        return this.db.collection('comments').where('book', '==', bookRef).onSnapshot(onSnapshot);
+        return this.db.collection('comments')
+        .where('book', '==', bookRef)
+        .orderBy('dateCreated', 'desc')
+        .onSnapshot(onSnapshot);
         }
 
     async login({ email, password }) {

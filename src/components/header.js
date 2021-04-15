@@ -39,7 +39,18 @@ const Header = ({ siteTitle }) => {
         </h1>
         <div className="my-auto mx-0">
           {!!user && !!user.email &&
-            <div>
+            <div className="flex">
+              {!!user.isAdmin &&
+              <div className="mr-3"> 
+                <Link className="text-white" to="/add-author">
+                  Add author
+                </Link>
+                <span>|</span>
+                <Link className="text-white" to="/add-book">
+                  Add book
+                </Link>
+              </div>
+              }
               Hello, {user.username || user.email}
               <div className="text-right">
                  <button onClick={handleLogOutClick} className="hover:underline hover:text-white cursor-pointer">Logout</button>
